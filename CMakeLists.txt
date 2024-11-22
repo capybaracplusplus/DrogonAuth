@@ -11,6 +11,8 @@ add_executable(my_drogon_app
         src/main.cpp
         src/models/User.hpp
         src/models/UserBase.hpp
+        src/db/PSQL.hpp
+        src/db/PSQL.cpp
 )
 
 target_link_libraries(my_drogon_app
