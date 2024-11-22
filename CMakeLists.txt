@@ -9,6 +9,8 @@ find_package(nlohmann_json REQUIRED)
 
 add_executable(my_drogon_app
         src/main.cpp
+        src/models/User.hpp
+        src/models/UserBase.hpp
 )
 
 target_link_libraries(my_drogon_app
