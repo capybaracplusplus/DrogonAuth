@@ -1,0 +1,24 @@
+{
+  "database": {
+    "name": "default",
+    "rdbms": "postgresql",
+    "host": "127.0.0.1",
+    "port": 5432,
+    "dbname": "test",
+    "user": "example_user",
+    "passwd": "example_password",
+    "is_fast": false,
+    "connection_number": 1,
+    "filename": ""
+  },
+  "listeners": [
+    {
+      "address": "127.0.0.1",
+      "port": 3000,
+      "https": false,
+      "cert": "",
+      "key": ""
+    }
+  ],
+  "threads_num": 2
+}

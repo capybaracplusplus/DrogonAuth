@@ -27,6 +27,27 @@ PGresult *PSQL::execQuery(const char *query) {
     return res_;
 }
 
+PGresult *PSQL::execQueryParams(const char *query, int nParams, const char **params) {
+    // Выполняем запрос с параметрами
+    PGresult *res = PQexecParams(conn_,
+                                 query,          // SQL-запрос
+                                 nParams,        // количество параметров
+                                 nullptr,        // типы данных параметров (можно указать, если нужно)
+                                 params,         // массив значений параметров
+                                 nullptr,        // длины параметров (по умолчанию)
+                                 nullptr,        // типы параметров (по умолчанию)
+                                 0);             // преобразование параметров в строку
+
+    if (PQresultStatus(res) != PGRES_TUPLES_OK) {
+        std::cerr << "Ошибка выполнения запроса: " << PQerrorMessage(conn_) << std::endl;
+        PQclear(res);
+        throw std::runtime_error("Ошибка выполнения запроса");
+    }
+
+    return res;
+}
+
+
 void PSQL::createTable(const char *table_name, const char *create_table_query_text) {
     try {
         std::string createQuery =
@@ -40,7 +61,7 @@ void PSQL::createTable(const char *table_name, const char *create_table_query_te
 
 void PSQL::insertData(const std::vector<const char *> &insert_query) {
     try {
-        for (const auto& elem: insert_query) {
+        for (const auto &elem: insert_query) {
             execQuery(elem);
         }
         std::cout << "Данные успешно вставлены в таблицу!" << std::endl;

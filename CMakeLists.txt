@@ -7,12 +7,22 @@ find_package(Drogon REQUIRED)
 find_package(PostgreSQL REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
+include_directories(${CMAKE_SOURCE_DIR}/libs/jwt-cpp/include)
+
+
 add_executable(my_drogon_app
         src/main.cpp
         src/models/User.hpp
-        src/models/UserBase.hpp
         src/db/PSQL.hpp
         src/db/PSQL.cpp
+        src/routes/authRoutes.cpp
+        src/routes/authRoutes.hpp
+        src/middlewares/AuthMiddleware.hpp
+        src/services/serviceRegistraion.hpp
+        src/services/serviceRegistraion.cpp
+        src/middlewares/UsernameValidation.hpp
+        src/dto/userDtro.hpp
+        src/repositories/UserTableRepos.hpp
 )
 
 target_link_libraries(my_drogon_app

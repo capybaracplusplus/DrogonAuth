@@ -2,23 +2,23 @@
 
 #include <string>
 
-class User {
+class UserDto {
 public:
-    User(std::string username, std::string hashPassword, std::string email) :
-            hashPassword_(hashPassword),
+    UserDto(std::string username, std::string password, std::string email) :
+            password_(password),
             username_(username),
             email_(email) {}
 
-    ~User() = default;
+    ~UserDto() = default;
 
     std::string getUsername() const { return username_; }
 
-    std::string getHashPassword_() const { return hashPassword_; }
+    std::string getPassword_() const { return password_; }
 
     std::string getEmail() const { return email_; }
 
 protected:
-    std::string hashPassword_;
+    std::string password_;
     std::string username_;
     std::string email_;
 };

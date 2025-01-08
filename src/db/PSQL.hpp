@@ -7,11 +7,20 @@
 
 class PSQL {
 public:
+    static PSQL &getInstance(const char *conninfo = "host=localhost dbname=test user=postgres password=secret") {
+        static PSQL instance(conninfo);
+        return instance;
+    }
+
+private:
     PSQL(const char *conninfo);
 
+public:
     ~PSQL();
 
     PGresult *execQuery(const char *query);
+
+    PGresult *execQueryParams(const char *query, int nParams, const char **params);
 
     void createTable(const char *table_name, const char *create_table_query_text);
 
