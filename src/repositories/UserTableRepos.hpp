@@ -17,6 +17,8 @@ public:
 
     void update_user(const User &);
 
+    std::string find_user_hashPassword(const std::string &username, const std::string &email);
+
 private:
     drogon::orm::DbClientPtr dbClient_;
 };
