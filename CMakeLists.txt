@@ -13,16 +13,14 @@ include_directories(${CMAKE_SOURCE_DIR}/libs/jwt-cpp/include)
 add_executable(my_drogon_app
         src/main.cpp
         src/models/User.hpp
-        src/db/PSQL.hpp
-        src/db/PSQL.cpp
-        src/routes/authRoutes.cpp
-        src/routes/authRoutes.hpp
+        src/dto/userDtro.hpp
         src/middlewares/AuthMiddleware.hpp
+        src/controllers/AuthController.cc
+        src/controllers/AuthController.h
         src/services/serviceRegistraion.hpp
         src/services/serviceRegistraion.cpp
-        src/middlewares/UsernameValidation.hpp
-        src/dto/userDtro.hpp
         src/repositories/UserTableRepos.hpp
+        src/repositories/UserTableRepos.cpp
 )
 
 target_link_libraries(my_drogon_app

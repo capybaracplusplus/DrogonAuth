@@ -1,15 +1,20 @@
 {
-  "database": {
-    "name": "default",
-    "rdbms": "postgresql",
-    "host": "127.0.0.1",
-    "port": 5432,
-    "dbname": "test",
-    "user": "example_user",
-    "passwd": "example_password",
-    "is_fast": false,
-    "connection_number": 1,
-    "filename": ""
+  "db_clients": [
+    {
+      "name": "default",
+      "rdbms": "postgresql",
+      "host": "localhost",
+      "port": 5432,
+      "dbname": "postgres",
+      "user": "postgres",
+      "passwd": "postgres",
+      "is_fast": false,
+      "connection_number": 1,
+      "filename": ""
+    }
+  ],
+  "log": {
+    "log_level": "TRACE"
   },
   "listeners": [
     {

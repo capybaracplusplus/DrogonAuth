@@ -7,20 +7,19 @@ void AuthController::signUp(const HttpRequestPtr &req, std::function<void(const 
 
     try {
         auto body = req->getJsonObject();
-
-        User user((*body)["username"].asString(), (*body)["hashPassword"].asString(), (*body)["email"].asString());
-
+        User user((*body)["username"].asString(), (*body)["password"].asString(),
+                  (*body)["email"].asString());
         serviceRegistraion(user);
-
         Json::Value ret;
         ret["message"] = "success";
         auto resp = HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::HttpStatusCode::k200OK);
         callback(resp);
 
-    } catch (...) {
-        std::clog << "err AuthController::signUp" << std::endl;
-        throw;
+    } catch (const std::exception &e) {
+        auto resp = drogon::HttpResponse::newHttpJsonResponse({{"error", e.what()}});
+        resp->setStatusCode(drogon::k400BadRequest);
+        callback(resp);
     }
 }
 

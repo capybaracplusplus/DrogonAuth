@@ -5,14 +5,10 @@
 #include "../repositories/UserTableRepos.hpp"
 
 
-
-
-
-void serviceRegistraion(const UserDto &userDto) {
+void serviceRegistraion(const User &userDto) {
     std::clog << "log serviceRegistraion" << std::endl;
     try {
-        User user(userDto.getUsername(), userDto.getPassword_(), userDto.getEmail());
-
+        User user(userDto.getUsername(), userDto.getHashPassword_(), userDto.getEmail());
 
 
 
@@ -20,5 +16,4 @@ void serviceRegistraion(const UserDto &userDto) {
         std::clog << "err serviceRegistraion" << std::endl;
         throw;
     }
-
 }
