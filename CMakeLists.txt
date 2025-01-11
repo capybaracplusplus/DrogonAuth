@@ -4,6 +4,7 @@ project(DrogonAuth)
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(libs/Bcrypt.cpp)
+add_subdirectory(libs/redis-plus-plus)
 include_directories(/path/to/redis-plus-plus)
 
 find_package(Drogon REQUIRED)
@@ -27,15 +28,33 @@ add_executable(my_drogon_app
         src/repositories/UserTableRepos.cpp
         src/services/serviceAuth.cpp
         src/services/serviceAuth.hpp
-        src/repositories/redisRepos.cpp
-        src/repositories/redisRepos.hpp
+        src/repositories/sessionRepos.cpp
+        src/repositories/sessionRepos.hpp
+        src/utils/jwt/jwtToken.hpp
 )
+
+# <------------ add hiredis dependency --------------->
+find_path(HIREDIS_HEADER hiredis)
+target_include_directories(my_drogon_app PUBLIC ${HIREDIS_HEADER})
+
+find_library(HIREDIS_LIB hiredis)
+# <------------ add redis-plus-plus dependency -------------->
+# NOTE: this should be *sw* NOT *redis++*
+find_path(REDIS_PLUS_PLUS_HEADER sw)
+find_library(REDIS_PLUS_PLUS_LIB redis++)
+
+
+
 
 target_link_libraries(my_drogon_app
         PRIVATE Drogon::Drogon
         nlohmann_json::nlohmann_json
         PostgreSQL::PostgreSQL
         bcrypt
+        ${HIREDIS_LIB}
+        PRIVATE redis++ hiredis
+        PUBLIC ${REDIS_PLUS_PLUS_HEADER}
+        ${REDIS_PLUS_PLUS_LIB}
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

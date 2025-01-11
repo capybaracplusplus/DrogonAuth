@@ -1,11 +1,12 @@
 #pragma once
 
 #include "../models/User.hpp"
+#include "../utils/jwt/jwtToken.hpp"
 
 class AuthService {
 public:
     void registration(const User &);
 
-    void login(const User &);
+    JwtToken::TokenPair login(const User &);
 
 };

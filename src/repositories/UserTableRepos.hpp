@@ -2,9 +2,14 @@
 
 #include "../models/User.hpp"
 #include <drogon/HttpAppFramework.h>
+#include "string"
 
 class UserRepos {
     using id = size_t;
+    struct UserAuth {
+        id id_;
+        std::string password;
+    };
 public:
     UserRepos() : dbClient_(drogon::app().getDbClient("default")) {}
 
@@ -17,7 +22,7 @@ public:
 
     void update_user(const User &);
 
-    std::string find_user_hashPassword(const std::string &username, const std::string &email);
+    UserAuth getUserAuthData(const std::string &username, const std::string &email);
 
 private:
     drogon::orm::DbClientPtr dbClient_;

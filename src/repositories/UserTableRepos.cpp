@@ -17,19 +17,22 @@ void UserRepos::create_user(const User &user) {
     );
 }
 
-std::string UserRepos::find_user_hashPassword(const std::string &username, const std::string &email) {
+UserRepos::UserAuth UserRepos::getUserAuthData(const std::string &username, const std::string &email) {
     try {
         auto users = dbClient_->execSqlSync(
-                "SELECT hashpassword FROM users WHERE username = $1 AND email = $2",
+                "SELECT id, hashpassword FROM users WHERE username = $1 AND email = $2",
                 username, email
         );
         if (!users.empty()) {
-            return users.front()["hashpassword"].as<std::string>();
+            auto user = users.front();
+            size_t userId = user["id"].as<int>();
+            std::string passwordHash = user["hashpassword"].as<std::string>();
+            return {userId, passwordHash};
         }
-        return "";
+        return {0, ""};
     } catch (const std::exception &e) {
         LOG_ERROR << "Error while querying database: " << e.what();
-        return "";
+        return {0, ""};
     }
 }
 

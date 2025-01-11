@@ -2,34 +2,35 @@
 #include "../repositories/UserTableRepos.hpp"
 #include "../../libs/Bcrypt.cpp/include/bcrypt.h"
 #include "jwt-cpp/jwt.h"
+#include "../repositories/sessionRepos.hpp"
 
 void AuthService::registration(const User &user) {
-    std::clog << "log serviceRegistraion" << std::endl;
+    std::clog << "log registration" << std::endl;
     try {
         UserRepos userRepos;
         userRepos.create_user(user);
     } catch (...) {
-        std::clog << "err serviceRegistraion" << std::endl;
+        std::clog << "err registration" << std::endl;
         throw;
     }
 }
 
-void AuthService::login(const User &user) {
-    UserRepos repos;
-    if (!bcrypt::validatePassword(user.getHashPassword_(),
-                                  repos.find_user_hashPassword(user.getUsername(), user.getEmail()))) {
-        throw std::runtime_error("Incorrect password");
+JwtToken::TokenPair AuthService::login(const User &user) {
+    std::clog << "log login" << std::endl;
+    try {
+        UserRepos repos;
+        auto userData = repos.getUserAuthData(user.getUsername(), user.getEmail());
+        if (!bcrypt::validatePassword(user.getHashPassword_(),
+                                      userData.password)) {
+            throw std::runtime_error("Incorrect password");
+        }
+        JwtToken jwtToken("secretKey", 1800, 30);
+        auto jwtTokenPair = jwtToken.createPair(userData.id_);
+        Session session(jwtTokenPair);
+        session.upload();
+        return jwtTokenPair;
+    } catch (...) {
+        std::clog << "err login" << std::endl;
+        throw;
     }
-
-    const auto accToken = jwt::create()
-            .set_issued_now()
-            .set_expires_in(std::chrono::seconds{3600})
-            .sign(jwt::algorithm::hs256{"secret"});
-
-    const auto refToken = jwt::create()
-            .set_issued_now()
-            .set_expires_in(std::chrono::seconds{6480000})
-            .sign(jwt::algorithm::hs256{"secret"});
-
-
 }
