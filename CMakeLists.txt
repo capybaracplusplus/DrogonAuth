@@ -21,7 +21,7 @@ add_executable(my_drogon_app
         src/main.cpp
         src/models/User.hpp
         src/dto/userDtro.hpp
-        src/middlewares/AuthMiddleware.hpp
+        src/middlewares/AuthValidationMiddleware.hpp
         src/controllers/AuthController.cc
         src/controllers/AuthController.h
         src/repositories/UserTableRepos.hpp
@@ -31,6 +31,7 @@ add_executable(my_drogon_app
         src/repositories/sessionRepos.cpp
         src/repositories/sessionRepos.hpp
         src/utils/jwt/jwtToken.hpp
+        src/middlewares/AuthMiddleware.hpp
 )
 
 # <------------ add hiredis dependency --------------->
