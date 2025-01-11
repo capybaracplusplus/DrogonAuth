@@ -27,7 +27,7 @@ JwtToken::TokenPair AuthService::login(const User &user) {
         JwtToken jwtToken("secretKey", 1800, 30);
         auto jwtTokenPair = jwtToken.createPair(userData.id_);
         Session session(jwtTokenPair);
-        session.upload();
+        session.upload(userData.id_);
         return jwtTokenPair;
     } catch (...) {
         std::clog << "err login" << std::endl;

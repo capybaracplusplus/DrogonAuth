@@ -6,6 +6,7 @@
 
 class UserRepos {
     using id = size_t;
+    using DbClientType = drogon::orm::DbClientPtr;
     struct UserAuth {
         id id_;
         std::string password;
@@ -25,5 +26,5 @@ public:
     UserAuth getUserAuthData(const std::string &username, const std::string &email);
 
 private:
-    drogon::orm::DbClientPtr dbClient_;
+    DbClientType dbClient_;
 };
