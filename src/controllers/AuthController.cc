@@ -52,3 +52,14 @@ void AuthController::signIn(const HttpRequestPtr &req, std::function<void(const 
         callback(resp);
     }
 }
+
+void AuthController::logout(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
+    auto attributes = req->getAttributes();
+    auto newAccessToken = attributes->get<std::string>("newAccessToken");
+    auto newRefreshToken = attributes->get<std::string>("newRefreshToken");
+}
+
+void
+AuthController::changePassword(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
+
+}

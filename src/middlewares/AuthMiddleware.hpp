@@ -10,6 +10,11 @@ using namespace drogon;
 
 void validationFunc(const UserDto &) noexcept(false) {}
 
+size_t getUserId(const std::string& refreshToken) {
+    auto decodedToken = jwt::decode(refreshToken);
+    return std::stoi(decodedToken.get_payload_claim("sub").as_string());
+}
+
 class AuthMiddleware : public HttpMiddleware<AuthMiddleware> {
 public:
     AuthMiddleware() {};
@@ -36,12 +41,6 @@ public:
             resp->setStatusCode(drogon::k400BadRequest);
             mcb(resp);
             return;
-        } else if (!body->isMember("userId")) {
-            auto resp = drogon::HttpResponse::newHttpJsonResponse(
-                    {{"error", "The body is missing the required field userId"}});
-            resp->setStatusCode(drogon::k400BadRequest);
-            mcb(resp);
-            return;
         }
 
         auto cookies = req->getCookies();
@@ -60,7 +59,6 @@ public:
 
         std::string refreshToken = refreshTokenIt->second;
         std::string accessToken = (*body)["accessToken"].asString();
-        repos::Session::user_id userId = std::stoi((*body)["userId"].asString());
 
         if (!jwtValidateToken.validateToken(accessToken)) {
             if (!jwtValidateToken.validateToken(refreshToken)) {
@@ -70,25 +68,37 @@ public:
                 mcb(resp);
                 return;
             }
-            auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId);
-            if (redisTokenPair.refreshToken != refreshToken) {
-                auto resp = drogon::HttpResponse::newHttpJsonResponse(
-                        {{"error", "Refresh token is not valid"}});
-                resp->setStatusCode(drogon::k401Unauthorized);
+            try {
+                auto decodedToken = jwt::decode(refreshToken);
+                auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
+                auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId);
+                if (redisTokenPair.refreshToken != refreshToken) {
+                    auto resp = drogon::HttpResponse::newHttpJsonResponse(
+                            {{"error", "Refresh token is not valid"}});
+                    resp->setStatusCode(drogon::k401Unauthorized);
+                    mcb(resp);
+                    return;
+                }
+                auto newJwtTokenPair = JwtToken().createPair(userId);
+                repos::Session session(newJwtTokenPair);
+                session.remove(userId);
+                session.upload(userId);
+                req->getAttributes()->insert("newAccessToken", newJwtTokenPair.accessToken);
+                req->getAttributes()->insert("newRefreshToken", newJwtTokenPair.refreshToken);
+            } catch (const std::exception &e) {
+                auto resp = drogon::HttpResponse::newHttpJsonResponse({{"error", "Invalid refreshToken format"}});
+                resp->setStatusCode(drogon::k400BadRequest);
                 mcb(resp);
                 return;
             }
-            auto newJwtTokenPair = JwtToken().createPair(userId);
-            repos::Session session(newJwtTokenPair);
-            session.remove(userId);
-            session.upload(userId);
-            req->getAttributes()->insert("newAccessToken", newJwtTokenPair.accessToken);
-            req->getAttributes()->insert("newRefreshToken", newJwtTokenPair.refreshToken);
-            // в контроллере
-            //auto attributes = req->getAttributes();
-            //auto newAccessToken = attributes->getOptional<std::string>("newAccessToken");
-            //auto newRefreshToken = attributes->getOptional<std::string>("newRefreshToken");
+        } else {
+            req->getAttributes()->insert("newAccessToken", accessToken);
+            req->getAttributes()->insert("newRefreshToken", refreshToken);
         }
+        // в контроллере
+        //auto attributes = req->getAttributes();
+        //auto newAccessToken = attributes->get<std::string>("newAccessToken");
+        //auto newRefreshToken = attributes->get<std::string>("newRefreshToken");
         nextCb(std::move(mcb));
     }
 };
