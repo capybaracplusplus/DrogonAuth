@@ -1,20 +1,25 @@
 #include "UserTableRepos.hpp"
 
 void UserRepos::create_user(const User &user) {
+    std::promise<void> promise;
+    std::future<void> future = promise.get_future();
     dbClient_->execSqlAsync(
             "INSERT INTO users (username, hashpassword, email) VALUES ($1, $2, $3)",
-            [=](const drogon::orm::Result &result) {
+            [=,&promise](const drogon::orm::Result &result) {
                 LOG_INFO << "User created successfully: " << user.getUsername();
+                promise.set_value();
             },
-            [=](const std::exception_ptr &e) {
+            [=,&promise](const std::exception_ptr &e) {
                 try {
                     std::rethrow_exception(e);
                 } catch (const std::exception &ex) {
                     LOG_ERROR << "Error creating user: " << ex.what();
+                    promise.set_exception(std::current_exception());
                 }
             },
             user.getUsername(), user.getHashPassword_(), user.getEmail()
     );
+    future.get();
 }
 
 UserRepos::UserAuth UserRepos::getUserAuthData(const std::string &username, const std::string &email) {

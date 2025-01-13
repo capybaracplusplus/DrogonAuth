@@ -9,9 +9,9 @@ void AuthService::registration(const User &user) {
     try {
         UserRepos userRepos;
         userRepos.create_user(user);
-    } catch (...) {
-        std::clog << "err registration" << std::endl;
-        throw;
+    } catch (const std::exception &ex) {
+        std::clog << "err registration: " << ex.what() << std::endl;
+        throw std::runtime_error("Error during user registration");
     }
 }
 
