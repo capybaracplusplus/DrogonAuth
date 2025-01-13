@@ -11,9 +11,9 @@ public:
         Id id;
     };
 public:
-    void registration(const User &);
+    static void registration(const User &);
 
-    UserData login(const User &);
+    static UserData login(const User &);
 
-    void logout(const UserData &);
+    static void logout(const UserData &);
 };

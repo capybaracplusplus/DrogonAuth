@@ -8,17 +8,16 @@ void AuthController::signUp(const HttpRequestPtr &req, std::function<void(const 
     std::clog << "log signUpController" << std::endl;
     try {
         auto body = req->getJsonObject();
-
         User user((*body)["username"].asString(), bcrypt::generateHash((*body)["password"].asString()),
                   (*body)["email"].asString());
-        AuthService authService;
-        authService.registration(user);
+
+        AuthService::registration(user);
+
         Json::Value ret;
         ret["message"] = "User registered successfully";
         auto resp = HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::HttpStatusCode::k200OK);
         callback(resp);
-
     } catch (const std::exception &e) {
         Json::Value ret;
         ret["error"] = e.what();
@@ -34,8 +33,9 @@ void AuthController::signIn(const HttpRequestPtr &req, std::function<void(const 
         auto body = req->getJsonObject();
         User user((*body)["username"].asString(), (*body)["password"].asString(),
                   (*body)["email"].asString());
-        static AuthService authService;
-        auto userData = authService.login(user);
+
+        auto userData = AuthService::login(user);
+
         auto jwt = userData.TokenPair;
         Json::Value ret;
         ret["message"] = "The user has successfully logged into the account";
@@ -70,8 +70,7 @@ void AuthController::logout(const HttpRequestPtr &req, std::function<void(const 
 
         AuthService::UserData userData(JwtToken::TokenPair{newAccessToken, newRefreshToken}, userId);
 
-        static AuthService authService;
-        authService.logout(userData);
+        AuthService::logout(userData);
 
         Json::Value ret;
         ret["message"] = "The user has successfully logged out of the account.";
