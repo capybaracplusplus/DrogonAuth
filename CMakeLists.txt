@@ -32,6 +32,8 @@ add_executable(my_drogon_app
         src/repositories/sessionRepos.hpp
         src/utils/jwt/jwtToken.hpp
         src/middlewares/AuthMiddleware.hpp
+        src/models/Chat.hpp
+        src/models/Message.hpp
 )
 
 # <------------ add hiredis dependency --------------->
