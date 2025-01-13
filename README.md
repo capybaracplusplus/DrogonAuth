@@ -31,7 +31,7 @@
   "password": "123456789&mM"
 }
 ```
-Тело ответа
+Тело ответа:
 ```json
 {
   "message": "User registered successfully"
@@ -48,7 +48,7 @@
   "password": "123456789&mM"
 }
 ```
-Тело ответа
+Тело ответа:
 ```json
 {
   "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MzY5MDk2MTcsImlhdCI6MTczNjgwMTYxNywiaXNzIjoiQ2FweSIsInN1YiI6IjM2In0.y-2Hv8ES-M9FUyWj8W2iy9yrTSKQfISaKdLnuzV0OMk",
@@ -68,7 +68,7 @@
   "password": "123456789&mM"
 }
 ```
-Тело ответа
+Тело ответа:
 ```json
 {
   "logout": "ok",
