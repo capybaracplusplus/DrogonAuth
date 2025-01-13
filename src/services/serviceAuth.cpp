@@ -34,3 +34,8 @@ AuthService::UserData AuthService::login(const User &user) {
         throw;
     }
 }
+
+void AuthService::logout(const Id &) {
+    std::clog << "log logout" << std::endl;
+
+}

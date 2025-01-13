@@ -2,6 +2,7 @@
 #include "../models/User.hpp"
 #include "../../libs/Bcrypt.cpp/include/bcrypt.h"
 #include "../services/serviceAuth.hpp"
+#include "../repositories/sessionRepos.hpp"
 
 void AuthController::signUp(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
     std::clog << "log signUpController" << std::endl;
@@ -20,7 +21,7 @@ void AuthController::signUp(const HttpRequestPtr &req, std::function<void(const 
 
     } catch (const std::exception &e) {
         Json::Value ret;
-        ret["error"] =  e.what();
+        ret["error"] = e.what();
         auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::k400BadRequest);
         callback(resp);
@@ -50,7 +51,7 @@ void AuthController::signIn(const HttpRequestPtr &req, std::function<void(const 
         callback(resp);
     } catch (const std::exception &e) {
         Json::Value ret;
-        ret["error"] =  e.what();
+        ret["error"] = e.what();
         auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::k400BadRequest);
         callback(resp);
@@ -58,10 +59,24 @@ void AuthController::signIn(const HttpRequestPtr &req, std::function<void(const 
 }
 
 void AuthController::logout(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
-    auto attributes = req->getAttributes();
-    auto newAccessToken = attributes->get<std::string>("newAccessToken");
-    auto newRefreshToken = attributes->get<std::string>("newRefreshToken");
-    //...
+    std::clog << "log logoutController" << std::endl;
+    try {
+        auto attributes = req->getAttributes();
+        auto newAccessToken = attributes->get<std::string>("newAccessToken");
+        auto newRefreshToken = attributes->get<std::string>("newRefreshToken");
+
+        auto decodedToken = jwt::decode(newAccessToken);
+        auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
+
+        AuthService authService;
+        authService.logout(userId);
+    } catch (const std::exception &e) {
+        Json::Value ret;
+        ret["error"] = e.what();
+        auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
+        resp->setStatusCode(drogon::k400BadRequest);
+        callback(resp);
+    }
 }
 
 void

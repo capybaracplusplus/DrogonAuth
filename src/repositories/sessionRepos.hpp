@@ -22,7 +22,7 @@ namespace repos {
 
         const JwtTokens &get(const user_id &);
 
-        void remove(user_id);
+        void remove(const user_id &);
 
         const JwtTokens &getJwt();
 

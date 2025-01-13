@@ -8,8 +8,6 @@
 
 using namespace drogon;
 
-void validationFunc(const UserDto &) noexcept(false) {}
-
 size_t getUserId(const std::string &refreshToken) {
     auto decodedToken = jwt::decode(refreshToken);
     return std::stoi(decodedToken.get_payload_claim("sub").as_string());
@@ -102,7 +100,11 @@ public:
             try {
                 auto decodedToken = jwt::decode(accessToken);
                 auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
-                auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId);
+
+
+                auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId); // o_o
+
+
                 if (redisTokenPair.accessToken != accessToken) {
                     Json::Value ret;
                     ret["error"] = "error", "accessToken token is not valid";
@@ -126,6 +128,7 @@ public:
         //auto attributes = req->getAttributes();
         //auto newAccessToken = attributes->get<std::string>("newAccessToken");
         //auto newRefreshToken = attributes->get<std::string>("newRefreshToken");
+
         nextCb(std::move(mcb));
     }
 };

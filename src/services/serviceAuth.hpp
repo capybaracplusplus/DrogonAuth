@@ -15,4 +15,5 @@ public:
 
     UserData login(const User &);
 
+    void logout(const Id &);
 };

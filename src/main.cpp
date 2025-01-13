@@ -1,5 +1,6 @@
 #include <iostream>
 #include "drogon/drogon.h"
+#include "middlewares/AuthMiddleware.hpp"
 #include "middlewares/AuthValidationMiddleware.hpp"
 #include "controllers/AuthController.h"
 

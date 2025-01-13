@@ -4,7 +4,6 @@
 #include "../dto/userDtro.hpp"
 
 using namespace drogon;
-
 void validationFunc(const UserDto &) noexcept(false) {}
 
 class AuthValidationMiddleware : public HttpMiddleware<AuthValidationMiddleware> {

@@ -11,11 +11,10 @@ public:
 
         ADD_METHOD_TO(AuthController::signUp, "/sign-up", Post, "AuthValidationMiddleware");
         ADD_METHOD_TO(AuthController::signIn, "/sign-in", Post, "AuthValidationMiddleware");
-        //ADD_METHOD_TO(AuthController::logout, "/logout", Post);
+        ADD_METHOD_TO(AuthController::logout, "/logout", Post, "AuthMiddleware");
 
     METHOD_LIST_END
 
-    //AuthMiddleware
     void signUp(const HttpRequestPtr &req,
                 std::function<void(const HttpResponsePtr &)> &&callback);
 
