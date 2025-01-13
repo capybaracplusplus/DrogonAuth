@@ -4,18 +4,18 @@
 
 class UserDto {
 public:
-    UserDto(std::string username, std::string password, std::string email) :
+    UserDto(const std::string &username, const std::string &password, const std::string &email) :
             password_(password),
             username_(username),
             email_(email) {}
 
     ~UserDto() = default;
 
-    std::string getUsername() const { return username_; }
+    const std::string &getUsername() const { return username_; }
 
-    std::string getPassword_() const { return password_; }
+    const std::string &getPassword_() const { return password_; }
 
-    std::string getEmail() const { return email_; }
+    const std::string &getEmail() const { return email_; }
 
 protected:
     std::string password_;

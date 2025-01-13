@@ -11,9 +11,9 @@ public:
         std::string refreshToken;
     };
 
-    JwtToken(const std::string &secretKey,
-             size_t accessTokenLifetimeMinutes,
-             size_t refreshTokenLifetimeDays)
+    JwtToken(const std::string &secretKey = "secretKey",
+             size_t accessTokenLifetimeMinutes = 1800,
+             size_t refreshTokenLifetimeDays = 30)
             : secretKey_(secretKey),
               accessTokenLifetime_(std::chrono::minutes(accessTokenLifetimeMinutes)),
               refreshTokenLifetime_(std::chrono::days(refreshTokenLifetimeDays)) {}
@@ -40,6 +40,21 @@ public:
                 .sign(jwt::algorithm::hs256{secretKey_});
 
         return {accessToken, refreshToken};
+    }
+
+    bool validateToken(const std::string &token) const {
+        try {
+            auto decodedToken = jwt::decode(token);
+
+            jwt::verify()
+                    .allow_algorithm(jwt::algorithm::hs256{secretKey_})
+                    .with_issuer("Capy")
+                    .verify(decodedToken);
+            return true;
+        } catch (const std::exception &e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+            return false;
+        }
     }
 
 private:

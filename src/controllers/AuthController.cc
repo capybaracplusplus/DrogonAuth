@@ -32,10 +32,12 @@ void AuthController::signIn(const HttpRequestPtr &req, std::function<void(const 
         User user((*body)["username"].asString(), (*body)["password"].asString(),
                   (*body)["email"].asString());
         AuthService authService;
-        auto jwt = authService.login(user);
+        auto userData = authService.login(user);
+        auto jwt = userData.TokenPair;
         Json::Value ret;
         ret["message"] = "success";
         ret["accessToken"] = jwt.accessToken;
+        ret["userId"] = userData.id;
         auto resp = HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::HttpStatusCode::k200OK);
         Cookie cookie("refreshToken", jwt.refreshToken);

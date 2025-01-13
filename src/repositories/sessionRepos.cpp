@@ -2,6 +2,7 @@
 #include <json/writer.h>
 #include "sessionRepos.hpp"
 
+using namespace repos;
 
 void Session::upload(const user_id & user_id) {
     Json::Value valueJsonData;
@@ -11,6 +12,6 @@ void Session::upload(const user_id & user_id) {
     dbClient_.set(std::to_string(user_id), value);
 }
 
-const Session &Session::get(const user_id &) {}
+const Session::JwtTokens &Session::get(const user_id &) {}
 
 void Session::remove(user_id) {}

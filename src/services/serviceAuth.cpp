@@ -15,7 +15,7 @@ void AuthService::registration(const User &user) {
     }
 }
 
-JwtToken::TokenPair AuthService::login(const User &user) {
+AuthService::UserData AuthService::login(const User &user) {
     std::clog << "log login" << std::endl;
     try {
         UserRepos repos;
@@ -26,9 +26,9 @@ JwtToken::TokenPair AuthService::login(const User &user) {
         }
         JwtToken jwtToken("secretKey", 1800, 30);
         auto jwtTokenPair = jwtToken.createPair(userData.id_);
-        Session session(jwtTokenPair);
+        repos::Session session(jwtTokenPair);
         session.upload(userData.id_);
-        return jwtTokenPair;
+        return {jwtTokenPair, userData.id_};
     } catch (...) {
         std::clog << "err login" << std::endl;
         throw;
