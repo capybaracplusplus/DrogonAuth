@@ -19,7 +19,9 @@ void AuthController::signUp(const HttpRequestPtr &req, std::function<void(const 
         callback(resp);
 
     } catch (const std::exception &e) {
-        auto resp = drogon::HttpResponse::newHttpJsonResponse({{"error", e.what()}});
+        Json::Value ret;
+        ret["error"] =  e.what();
+        auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::k400BadRequest);
         callback(resp);
     }
@@ -47,7 +49,9 @@ void AuthController::signIn(const HttpRequestPtr &req, std::function<void(const 
         resp->addCookie(cookie);
         callback(resp);
     } catch (const std::exception &e) {
-        auto resp = drogon::HttpResponse::newHttpJsonResponse({{"error", e.what()}});
+        Json::Value ret;
+        ret["error"] =  e.what();
+        auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::k400BadRequest);
         callback(resp);
     }
@@ -57,6 +61,7 @@ void AuthController::logout(const HttpRequestPtr &req, std::function<void(const 
     auto attributes = req->getAttributes();
     auto newAccessToken = attributes->get<std::string>("newAccessToken");
     auto newRefreshToken = attributes->get<std::string>("newRefreshToken");
+    //...
 }
 
 void

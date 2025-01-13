@@ -6,8 +6,6 @@
 
 int main() {
     std::clog << "log start" << std::endl;
-    //auto resp = drogon::HttpResponse::newHttpJsonResponse({{"error", "Empty request body"}});
-
     std::clog << "Drogon version: " << drogon::getVersion() << std::endl;
 
     drogon::app().loadConfigFile("../src/config.json");

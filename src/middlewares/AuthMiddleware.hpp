@@ -28,16 +28,18 @@ public:
         auto body = req->getJsonObject();
 
         if (!body) {
-            auto resp = drogon::HttpResponse::newHttpJsonResponse(
-                    {{"error", "Invalid JSON body"}});
+            Json::Value ret;
+            ret["error"] = "error", "Invalid JSON body";
+            auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
             resp->setStatusCode(drogon::k400BadRequest);
             mcb(resp);
             return;
         }
 
         if (!body->isMember("accessToken")) {
-            auto resp = drogon::HttpResponse::newHttpJsonResponse(
-                    {{"error", "The body is missing the required field accessToken"}});
+            Json::Value ret;
+            ret["error"] = "error", "The body is missing the required field accessToken";
+            auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
             resp->setStatusCode(drogon::k400BadRequest);
             mcb(resp);
             return;
@@ -48,8 +50,9 @@ public:
         auto refreshTokenIt = cookies.find("refreshToken");
 
         if (refreshTokenIt == cookies.end()) {
-            auto resp = drogon::HttpResponse::newHttpJsonResponse(
-                    {{"error", "Missing refreshToken in cookies"}});
+            Json::Value ret;
+            ret["error"] = "error", "Missing refreshToken in cookies";
+            auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
             resp->setStatusCode(drogon::k401Unauthorized);
             mcb(resp);
             return;
@@ -62,8 +65,9 @@ public:
 
         if (!jwtValidateToken.validateToken(accessToken)) {
             if (!jwtValidateToken.validateToken(refreshToken)) {
-                auto resp = drogon::HttpResponse::newHttpJsonResponse(
-                        {{"error", "Refresh token expired"}});
+                Json::Value ret;
+                ret["error"] = "error", "Refresh token expired";
+                auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                 resp->setStatusCode(drogon::k401Unauthorized);
                 mcb(resp);
                 return;
@@ -73,8 +77,9 @@ public:
                 auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
                 auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId);
                 if (redisTokenPair.refreshToken != refreshToken) {
-                    auto resp = drogon::HttpResponse::newHttpJsonResponse(
-                            {{"error", "Refresh token is not valid"}});
+                    Json::Value ret;
+                    ret["error"] = "error", "Refresh token is not valid";
+                    auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                     resp->setStatusCode(drogon::k401Unauthorized);
                     mcb(resp);
                     return;
@@ -86,7 +91,9 @@ public:
                 req->getAttributes()->insert("newAccessToken", newJwtTokenPair.accessToken);
                 req->getAttributes()->insert("newRefreshToken", newJwtTokenPair.refreshToken);
             } catch (const std::exception &e) {
-                auto resp = drogon::HttpResponse::newHttpJsonResponse({{"error", "Invalid refreshToken format"}});
+                Json::Value ret;
+                ret["error"] = "Invalid refreshToken format";
+                auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                 resp->setStatusCode(drogon::k400BadRequest);
                 mcb(resp);
                 return;
@@ -97,14 +104,17 @@ public:
                 auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
                 auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId);
                 if (redisTokenPair.refreshToken != refreshToken) {
-                    auto resp = drogon::HttpResponse::newHttpJsonResponse(
-                            {{"error", "Refresh token is not valid"}});
+                    Json::Value ret;
+                    ret["error"] = "error", "Refresh token is not valid";
+                    auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                     resp->setStatusCode(drogon::k401Unauthorized);
                     mcb(resp);
                     return;
                 }
             } catch (const std::exception &e) {
-                auto resp = drogon::HttpResponse::newHttpJsonResponse({{"error", "Invalid refreshToken format"}});
+                Json::Value ret;
+                ret["error"] = "error", "Invalid refreshToken format";
+                auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                 resp->setStatusCode(drogon::k400BadRequest);
                 mcb(resp);
                 return;
