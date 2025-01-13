@@ -13,15 +13,15 @@ size_t getUserId(const std::string &refreshToken) {
     return std::stoi(decodedToken.get_payload_claim("sub").as_string());
 }
 
-class AuthMiddleware : public HttpMiddleware<AuthMiddleware> {
+class authMiddleware : public HttpMiddleware<authMiddleware> {
 public:
-    AuthMiddleware() {};
+    authMiddleware() {};
 
     void invoke(const HttpRequestPtr &req,
                 MiddlewareNextCallback &&nextCb,
                 MiddlewareCallback &&mcb) override {
 
-        std::clog << "log AuthMiddleware" << std::endl;
+        std::clog << "log authMiddleware" << std::endl;
 
         auto body = req->getJsonObject();
         if (!body) {

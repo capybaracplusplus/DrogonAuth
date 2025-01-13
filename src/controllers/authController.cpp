@@ -1,20 +1,20 @@
-#include "AuthController.h"
-#include "../models/User.hpp"
+#include "authController.h"
+#include "../models/user.hpp"
 #include "../../libs/Bcrypt.cpp/include/bcrypt.h"
 #include "../services/serviceAuth.hpp"
 #include "../repositories/sessionRepos.hpp"
 
-void AuthController::signUp(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
+void authController::signUp(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
     std::clog << "log signUpController" << std::endl;
     try {
         auto body = req->getJsonObject();
-        User user((*body)["username"].asString(), bcrypt::generateHash((*body)["password"].asString()),
+        user user((*body)["username"].asString(), bcrypt::generateHash((*body)["password"].asString()),
                   (*body)["email"].asString());
 
         AuthService::registration(user);
 
         Json::Value ret;
-        ret["message"] = "User registered successfully";
+        ret["message"] = "user registered successfully";
         auto resp = HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::HttpStatusCode::k200OK);
         callback(resp);
@@ -27,11 +27,11 @@ void AuthController::signUp(const HttpRequestPtr &req, std::function<void(const 
     }
 }
 
-void AuthController::signIn(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
+void authController::signIn(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
     std::clog << "log signIpController" << std::endl;
     try {
         auto body = req->getJsonObject();
-        User user((*body)["username"].asString(), (*body)["password"].asString(),
+        user user((*body)["username"].asString(), (*body)["password"].asString(),
                   (*body)["email"].asString());
 
         auto userData = AuthService::login(user);
@@ -58,7 +58,7 @@ void AuthController::signIn(const HttpRequestPtr &req, std::function<void(const 
     }
 }
 
-void AuthController::logout(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
+void authController::logout(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
     std::clog << "log logoutController" << std::endl;
     try {
         auto attributes = req->getAttributes();
@@ -88,6 +88,6 @@ void AuthController::logout(const HttpRequestPtr &req, std::function<void(const 
 }
 
 void
-AuthController::changePassword(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
+authController::changePassword(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
 
 }

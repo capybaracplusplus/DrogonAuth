@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../models/User.hpp"
+#include "../models/user.hpp"
 #include <drogon/HttpAppFramework.h>
 #include "string"
 
@@ -15,13 +15,13 @@ public:
     UserRepos() : dbClient_(drogon::app().getDbClient("default")) {}
 
 public:
-    void create_user(const User &);
+    void create_user(const user &);
 
-    void delete_user(const User &);
+    void delete_user(const user &);
 
-    User read_user(id);
+    user read_user(id);
 
-    void update_user(const User &);
+    void update_user(const user &);
 
     UserAuth getUserAuthData(const std::string &username, const std::string &email);
 

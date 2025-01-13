@@ -4,14 +4,14 @@
 
 using namespace drogon;
 
-class AuthController : public drogon::HttpController<AuthController> {
+class authController : public drogon::HttpController<authController> {
 public:
 
     METHOD_LIST_BEGIN
 
-        ADD_METHOD_TO(AuthController::signUp, "/sign-up", Post, "AuthValidationMiddleware");
-        ADD_METHOD_TO(AuthController::signIn, "/sign-in", Post, "AuthValidationMiddleware");
-        ADD_METHOD_TO(AuthController::logout, "/logout", Post, "AuthMiddleware");
+        ADD_METHOD_TO(authController::signUp, "/sign-up", Post, "authValidationMiddleware");
+        ADD_METHOD_TO(authController::signIn, "/sign-in", Post, "authValidationMiddleware");
+        ADD_METHOD_TO(authController::logout, "/logout", Post, "authMiddleware");
 
     METHOD_LIST_END
 

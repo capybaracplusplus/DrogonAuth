@@ -19,21 +19,21 @@ include_directories(${CMAKE_SOURCE_DIR}/libs/jwt-cpp/include)
 
 add_executable(my_drogon_app
         src/main.cpp
-        src/models/User.hpp
+        src/models/user.hpp
         src/dto/userDtro.hpp
-        src/middlewares/AuthValidationMiddleware.hpp
-        src/controllers/AuthController.cc
-        src/controllers/AuthController.h
-        src/repositories/UserTableRepos.hpp
-        src/repositories/UserTableRepos.cpp
+        src/middlewares/authValidationMiddleware.hpp
+        src/controllers/authController.cpp
+        src/controllers/authController.h
+        src/repositories/userTableRepos.hpp
+        src/repositories/userTableRepos.cpp
         src/services/serviceAuth.cpp
         src/services/serviceAuth.hpp
         src/repositories/sessionRepos.cpp
         src/repositories/sessionRepos.hpp
         src/utils/jwt/jwtToken.hpp
-        src/middlewares/AuthMiddleware.hpp
-        src/models/Chat.hpp
-        src/models/Message.hpp
+        src/middlewares/authMiddleware.hpp
+        src/models/chat.hpp
+        src/models/message.hpp
 )
 
 # <------------ add hiredis dependency --------------->

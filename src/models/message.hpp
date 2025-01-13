@@ -4,12 +4,12 @@
 #include <string>
 #include <optional>
 
-class Message {
+class message {
     using messageId = size_t;
     using userId = size_t;
     using chatId = size_t;
 public:
-    static Message create();
+    static message create();
 public:
     messageId getId() const;
 

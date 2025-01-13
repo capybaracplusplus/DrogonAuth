@@ -1,8 +1,8 @@
 #include <iostream>
 #include "drogon/drogon.h"
-#include "middlewares/AuthMiddleware.hpp"
-#include "middlewares/AuthValidationMiddleware.hpp"
-#include "controllers/AuthController.h"
+#include "middlewares/authMiddleware.hpp"
+#include "middlewares/authValidationMiddleware.hpp"
+#include "controllers/authController.h"
 
 namespace repos {
     sw::redis::Redis redisDbClient = sw::redis::Redis("tcp://127.0.0.1:6379");

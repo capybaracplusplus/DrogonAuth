@@ -1,14 +1,14 @@
 #pragma once
 #include <string>
 
-class User {
+class user {
 public:
-    User(const std::string& username, const std::string& hashPassword, const std::string& email) :
+    user(const std::string& username, const std::string& hashPassword, const std::string& email) :
             hashPassword_(hashPassword),
             username_(username),
             email_(email) {}
 
-    ~User() = default;
+    ~user() = default;
 
     const std::string& getUsername() const { return username_; }
 

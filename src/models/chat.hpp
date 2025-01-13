@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-class Chat {
+class chat {
     using chatId = size_t;
     using userId = size_t;
 public:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../models/User.hpp"
+#include "../models/user.hpp"
 #include "../utils/jwt/jwtToken.hpp"
 
 class AuthService {
@@ -11,9 +11,9 @@ public:
         Id id;
     };
 public:
-    static void registration(const User &);
+    static void registration(const user &);
 
-    static UserData login(const User &);
+    static UserData login(const user &);
 
     static void logout(const UserData &);
 };

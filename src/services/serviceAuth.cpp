@@ -1,10 +1,10 @@
 #include "serviceAuth.hpp"
-#include "../repositories/UserTableRepos.hpp"
+#include "../repositories/userTableRepos.hpp"
 #include "../../libs/Bcrypt.cpp/include/bcrypt.h"
 #include "jwt-cpp/jwt.h"
 #include "../repositories/sessionRepos.hpp"
 
-void AuthService::registration(const User &user) {
+void AuthService::registration(const user &user) {
     std::clog << "log registration" << std::endl;
     try {
         static UserRepos userRepos;
@@ -15,7 +15,7 @@ void AuthService::registration(const User &user) {
     }
 }
 
-AuthService::UserData AuthService::login(const User &user) {
+AuthService::UserData AuthService::login(const user &user) {
     std::clog << "log login" << std::endl;
     try {
         static UserRepos repos;

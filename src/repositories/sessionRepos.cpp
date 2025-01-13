@@ -16,7 +16,7 @@ void Session::upload(const user_id &user_id)  {
 const Session::JwtTokens &Session::get(const user_id &user_id) {
     auto valueOpt = dbClient_.get(std::to_string(user_id));
     if (!valueOpt) {
-        throw std::runtime_error("User ID not found in Redis");
+        throw std::runtime_error("user ID not found in Redis");
     }
     Json::Value valueJsonData;
     Json::CharReaderBuilder readerBuilder;
