@@ -100,12 +100,12 @@ public:
             }
         } else {
             try {
-                auto decodedToken = jwt::decode(refreshToken);
+                auto decodedToken = jwt::decode(accessToken);
                 auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
                 auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId);
-                if (redisTokenPair.refreshToken != refreshToken) {
+                if (redisTokenPair.accessToken != accessToken) {
                     Json::Value ret;
-                    ret["error"] = "error", "Refresh token is not valid";
+                    ret["error"] = "error", "accessToken token is not valid";
                     auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                     resp->setStatusCode(drogon::k401Unauthorized);
                     mcb(resp);
