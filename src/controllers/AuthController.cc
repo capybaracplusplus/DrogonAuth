@@ -14,7 +14,7 @@ void AuthController::signUp(const HttpRequestPtr &req, std::function<void(const 
         AuthService authService;
         authService.registration(user);
         Json::Value ret;
-        ret["message"] = "success";
+        ret["message"] = "User registered successfully";
         auto resp = HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::HttpStatusCode::k200OK);
         callback(resp);
@@ -38,7 +38,7 @@ void AuthController::signIn(const HttpRequestPtr &req, std::function<void(const 
         auto userData = authService.login(user);
         auto jwt = userData.TokenPair;
         Json::Value ret;
-        ret["message"] = "success";
+        ret["message"] = "The user has successfully logged into the account";
         ret["accessToken"] = jwt.accessToken;
         ret["userId"] = userData.id;
         auto resp = HttpResponse::newHttpJsonResponse(ret);
@@ -74,7 +74,7 @@ void AuthController::logout(const HttpRequestPtr &req, std::function<void(const 
         authService.logout(userData);
 
         Json::Value ret;
-        ret["message"] = "success";
+        ret["message"] = "The user has successfully logged out of the account.";
         ret["logout"] = "ok";
         auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::k200OK);
