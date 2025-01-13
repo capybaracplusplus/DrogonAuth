@@ -6,6 +6,8 @@
 //using namespace sw::redis;
 
 namespace repos {
+    extern sw::redis::Redis redisDbClient;
+
     class Session {
     public:
         using DbClientType = sw::redis::Redis;
@@ -15,19 +17,18 @@ namespace repos {
 
         Session() = delete;
 
-        Session(const JwtTokens &jwtTokens_) : jwtTokens_(jwtTokens_),
-                                               dbClient_(sw::redis::Redis("tcp://127.0.0.1:6379")) {}
+        Session(const JwtTokens &jwtTokens_) : jwtTokens_(jwtTokens_) {}
 
-        void upload(const user_id &);
+        void upload(const user_id &) ;
 
-        const JwtTokens &get(const user_id &);
+        const JwtTokens &get(const user_id &) ;
 
-        void remove(const user_id &);
+        void remove(const user_id &) ;
 
-        const JwtTokens &getJwt();
+        const JwtTokens &getJwt() ;
 
     private:
-        DbClientType dbClient_;
+        DbClientType &dbClient_ = redisDbClient;
         JwtTokens jwtTokens_;
     };
 }

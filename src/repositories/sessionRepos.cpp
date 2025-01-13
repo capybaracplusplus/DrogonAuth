@@ -5,7 +5,7 @@
 
 using namespace repos;
 
-void Session::upload(const user_id &user_id) {
+void Session::upload(const user_id &user_id)  {
     Json::Value valueJsonData;
     valueJsonData["accessToken"] = jwtTokens_.accessToken;
     valueJsonData["refreshToken"] = jwtTokens_.refreshToken;
