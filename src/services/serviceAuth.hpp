@@ -5,10 +5,10 @@
 
 class AuthService {
 public:
-    using id = size_t;
+    using Id = size_t;
     struct UserData {
         JwtToken::TokenPair TokenPair;
-        id id;
+        Id id;
     };
 public:
     void registration(const User &);

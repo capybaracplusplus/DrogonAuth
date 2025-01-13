@@ -10,7 +10,7 @@ using namespace drogon;
 
 void validationFunc(const UserDto &) noexcept(false) {}
 
-size_t getUserId(const std::string& refreshToken) {
+size_t getUserId(const std::string &refreshToken) {
     auto decodedToken = jwt::decode(refreshToken);
     return std::stoi(decodedToken.get_payload_claim("sub").as_string());
 }
@@ -92,6 +92,23 @@ public:
                 return;
             }
         } else {
+            try {
+                auto decodedToken = jwt::decode(refreshToken);
+                auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
+                auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId);
+                if (redisTokenPair.refreshToken != refreshToken) {
+                    auto resp = drogon::HttpResponse::newHttpJsonResponse(
+                            {{"error", "Refresh token is not valid"}});
+                    resp->setStatusCode(drogon::k401Unauthorized);
+                    mcb(resp);
+                    return;
+                }
+            } catch (const std::exception &e) {
+                auto resp = drogon::HttpResponse::newHttpJsonResponse({{"error", "Invalid refreshToken format"}});
+                resp->setStatusCode(drogon::k400BadRequest);
+                mcb(resp);
+                return;
+            }
             req->getAttributes()->insert("newAccessToken", accessToken);
             req->getAttributes()->insert("newRefreshToken", refreshToken);
         }
