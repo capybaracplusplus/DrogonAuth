@@ -34,7 +34,7 @@ void AuthController::signIn(const HttpRequestPtr &req, std::function<void(const 
         auto body = req->getJsonObject();
         User user((*body)["username"].asString(), (*body)["password"].asString(),
                   (*body)["email"].asString());
-        AuthService authService;
+        static AuthService authService;
         auto userData = authService.login(user);
         auto jwt = userData.TokenPair;
         Json::Value ret;
@@ -68,8 +68,17 @@ void AuthController::logout(const HttpRequestPtr &req, std::function<void(const 
         auto decodedToken = jwt::decode(newAccessToken);
         auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
 
-        AuthService authService;
-        authService.logout(userId);
+        AuthService::UserData userData(JwtToken::TokenPair{newAccessToken, newRefreshToken}, userId);
+
+        static AuthService authService;
+        authService.logout(userData);
+
+        Json::Value ret;
+        ret["message"] = "success";
+        ret["logout"] = "ok";
+        auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
+        resp->setStatusCode(drogon::k200OK);
+        callback(resp);
     } catch (const std::exception &e) {
         Json::Value ret;
         ret["error"] = e.what();

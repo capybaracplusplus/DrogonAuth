@@ -7,7 +7,7 @@
 void AuthService::registration(const User &user) {
     std::clog << "log registration" << std::endl;
     try {
-        UserRepos userRepos;
+        static UserRepos userRepos;
         userRepos.create_user(user);
     } catch (const std::exception &ex) {
         std::clog << "err registration: " << ex.what() << std::endl;
@@ -18,7 +18,7 @@ void AuthService::registration(const User &user) {
 AuthService::UserData AuthService::login(const User &user) {
     std::clog << "log login" << std::endl;
     try {
-        UserRepos repos;
+        static UserRepos repos;
         auto userData = repos.getUserAuthData(user.getUsername(), user.getEmail());
         if (!bcrypt::validatePassword(user.getHashPassword_(),
                                       userData.password)) {
@@ -35,7 +35,8 @@ AuthService::UserData AuthService::login(const User &user) {
     }
 }
 
-void AuthService::logout(const Id &) {
+void AuthService::logout(const UserData & userData) {
     std::clog << "log logout" << std::endl;
-
+    repos::Session session(userData.TokenPair);
+    session.remove(userData.id);
 }

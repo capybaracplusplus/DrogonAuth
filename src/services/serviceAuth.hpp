@@ -15,5 +15,5 @@ public:
 
     UserData login(const User &);
 
-    void logout(const Id &);
+    void logout(const UserData &);
 };

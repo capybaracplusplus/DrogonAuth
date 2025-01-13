@@ -24,10 +24,9 @@ public:
         std::clog << "log AuthMiddleware" << std::endl;
 
         auto body = req->getJsonObject();
-
         if (!body) {
             Json::Value ret;
-            ret["error"] = "error", "Invalid JSON body";
+            ret["error"] = "Invalid JSON body";
             auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
             resp->setStatusCode(drogon::k400BadRequest);
             mcb(resp);
@@ -36,7 +35,7 @@ public:
 
         if (!body->isMember("accessToken")) {
             Json::Value ret;
-            ret["error"] = "error", "The body is missing the required field accessToken";
+            ret["error"] = "The body is missing the required field accessToken";
             auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
             resp->setStatusCode(drogon::k400BadRequest);
             mcb(resp);
@@ -49,7 +48,7 @@ public:
 
         if (refreshTokenIt == cookies.end()) {
             Json::Value ret;
-            ret["error"] = "error", "Missing refreshToken in cookies";
+            ret["error"] = "Missing refreshToken in cookies";
             auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
             resp->setStatusCode(drogon::k401Unauthorized);
             mcb(resp);
@@ -64,7 +63,7 @@ public:
         if (!jwtValidateToken.validateToken(accessToken)) {
             if (!jwtValidateToken.validateToken(refreshToken)) {
                 Json::Value ret;
-                ret["error"] = "error", "Refresh token expired";
+                ret["error"] = "Refresh token expired";
                 auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                 resp->setStatusCode(drogon::k401Unauthorized);
                 mcb(resp);
@@ -76,7 +75,7 @@ public:
                 auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId);
                 if (redisTokenPair.refreshToken != refreshToken) {
                     Json::Value ret;
-                    ret["error"] = "error", "Refresh token is not valid";
+                    ret["error"] = "Refresh token is not valid";
                     auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                     resp->setStatusCode(drogon::k401Unauthorized);
                     mcb(resp);
@@ -102,27 +101,30 @@ public:
                 auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
 
 
-                auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId); // o_o
+                auto redisTokenPair = repos::Session(repos::Session::JwtTokens{accessToken, refreshToken}).get(userId);
 
 
                 if (redisTokenPair.accessToken != accessToken) {
                     Json::Value ret;
-                    ret["error"] = "error", "accessToken token is not valid";
+                    ret["error"] = "accessToken token is not valid";
                     auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                     resp->setStatusCode(drogon::k401Unauthorized);
                     mcb(resp);
                     return;
                 }
+                repos::Session s(JwtToken::TokenPair{accessToken, refreshToken});
+                s.remove(userId);
+                s.upload(userId);
+                req->getAttributes()->insert("newAccessToken", accessToken);
+                req->getAttributes()->insert("newRefreshToken", refreshToken);
             } catch (const std::exception &e) {
                 Json::Value ret;
-                ret["error"] = "error", "Invalid refreshToken format";
+                ret["error"] = "Invalid refreshToken format";
                 auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
                 resp->setStatusCode(drogon::k400BadRequest);
                 mcb(resp);
                 return;
             }
-            req->getAttributes()->insert("newAccessToken", accessToken);
-            req->getAttributes()->insert("newRefreshToken", refreshToken);
         }
         // в контроллере
         //auto attributes = req->getAttributes();
