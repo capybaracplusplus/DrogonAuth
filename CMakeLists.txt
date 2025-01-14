@@ -24,8 +24,8 @@ add_executable(my_drogon_app
         src/middlewares/ValidateUserRequestMiddleware.hpp
         src/controllers/authController.cpp
         src/controllers/authController.h
-        src/repositories/userTableRepos.hpp
-        src/repositories/userTableRepos.cpp
+        src/repositories/userRepos.hpp
+        src/repositories/userRepos.cpp
         src/services/serviceAuth.cpp
         src/services/serviceAuth.hpp
         src/repositories/sessionRepos.cpp

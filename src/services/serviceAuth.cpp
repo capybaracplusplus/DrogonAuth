@@ -1,5 +1,5 @@
 #include "serviceAuth.hpp"
-#include "../repositories/userTableRepos.hpp"
+#include "../repositories/userRepos.hpp"
 #include "../../libs/Bcrypt.cpp/include/bcrypt.h"
 #include "jwt-cpp/jwt.h"
 #include "../repositories/sessionRepos.hpp"
