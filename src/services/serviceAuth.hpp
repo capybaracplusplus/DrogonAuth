@@ -18,4 +18,6 @@ public:
     static void logout(const UserData &);
 
     static JwtToken::TokenPair updateAccessToken(const UserData &);
+
+    static void changePassword(Id, const std::string &);
 };

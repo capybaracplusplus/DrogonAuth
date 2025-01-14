@@ -16,7 +16,7 @@ public:
         ADD_METHOD_TO(authController::getNewAccessToken, "/getNewAccessToken",
                       Post, "TokenExtractionMiddleware", "ValidateTokensMiddleware");
         ADD_METHOD_TO(authController::changePassword, "/changePassword", Post, "ValidateRequestBodyMiddleware",
-                      "ValidatePasswordMiddleware");
+                      "ValidatePasswordMiddleware", "TokenExtractionMiddleware", "ValidateTokensMiddleware");
     METHOD_LIST_END
 
     void signUp(const HttpRequestPtr &req,

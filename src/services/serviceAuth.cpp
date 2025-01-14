@@ -5,10 +5,10 @@
 #include "../repositories/sessionRepos.hpp"
 
 void AuthService::registration(const user &user) {
-    std::clog << "log registration" << std::endl;
+    std::clog << "log AuthService::registration" << std::endl;
     try {
-        static UserRepos userRepos;
-        userRepos.create_user(user);
+        static UserRepos repos;
+        repos.create_user(user);
     } catch (const std::exception &ex) {
         std::clog << "err registration: " << ex.what() << std::endl;
         throw std::runtime_error("Error during user registration");
@@ -16,7 +16,7 @@ void AuthService::registration(const user &user) {
 }
 
 AuthService::UserData AuthService::login(const user &user) {
-    std::clog << "log login" << std::endl;
+    std::clog << "log AuthService::login" << std::endl;
     try {
         static UserRepos repos;
         auto userData = repos.getUserAuthData(user.getUsername(), user.getEmail());
@@ -36,15 +36,22 @@ AuthService::UserData AuthService::login(const user &user) {
 }
 
 void AuthService::logout(const UserData &userData) {
-    std::clog << "log logout" << std::endl;
+    std::clog << "log AuthService::logout" << std::endl;
     repos::Session session(userData.TokenPair);
-    session.remove(userData.id,userData.TokenPair);
+    session.remove(userData.id, userData.TokenPair);
 }
 
 JwtToken::TokenPair AuthService::updateAccessToken(const UserData &userData) {
-    std::clog << "log updateAccessToken" << std::endl;
+    std::clog << "log AuthService::updateAccessToken" << std::endl;
     repos::Session session(userData.TokenPair);
-    session.remove(userData.id,userData.TokenPair);
+    session.remove(userData.id, userData.TokenPair);
     session.upload(userData.id);
-    return session.get(userData.id,userData.TokenPair);
+    return session.get(userData.id, userData.TokenPair);
+}
+
+
+void AuthService::changePassword(Id id, const std::string &password) {
+    std::clog << "log AuthService::changePassword" << std::endl;
+    static UserRepos repos;
+    repos.updatePassword(id, password);
 }

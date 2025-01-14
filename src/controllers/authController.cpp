@@ -5,7 +5,7 @@
 #include "../repositories/sessionRepos.hpp"
 
 void authController::signUp(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
-    std::clog << "log signUpController" << std::endl;
+    std::clog << "log authController::signUp" << std::endl;
     try {
         auto body = req->getJsonObject();
         user user((*body)["username"].asString(), bcrypt::generateHash((*body)["password"].asString()),
@@ -28,7 +28,7 @@ void authController::signUp(const HttpRequestPtr &req, std::function<void(const 
 }
 
 void authController::signIn(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
-    std::clog << "log signIpController" << std::endl;
+    std::clog << "log authController::signIn" << std::endl;
     try {
         auto body = req->getJsonObject();
         user user((*body)["username"].asString(), (*body)["password"].asString(),
@@ -37,6 +37,7 @@ void authController::signIn(const HttpRequestPtr &req, std::function<void(const 
         auto userData = AuthService::login(user);
 
         auto jwt = userData.TokenPair;
+
         Json::Value ret;
         ret["message"] = "The user has successfully logged into the account";
         ret["accessToken"] = jwt.accessToken;
@@ -59,7 +60,7 @@ void authController::signIn(const HttpRequestPtr &req, std::function<void(const 
 }
 
 void authController::logout(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
-    std::clog << "log logoutController" << std::endl;
+    std::clog << "log authController::logoutController" << std::endl;
     try {
         auto attributes = req->getAttributes();
         auto accessToken = attributes->get<std::string>("accessToken");
@@ -89,7 +90,7 @@ void authController::logout(const HttpRequestPtr &req, std::function<void(const 
 
 void authController::getNewAccessToken(const HttpRequestPtr &req,
                                        std::function<void(const HttpResponsePtr &)> &&callback) {
-    std::clog << "log getNewAccessToken" << std::endl;
+    std::clog << "log authController::getNewAccessToken" << std::endl;
 
     try {
         auto attributes = req->getAttributes();
@@ -125,5 +126,26 @@ void authController::getNewAccessToken(const HttpRequestPtr &req,
 
 void
 authController::changePassword(const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback) {
+    std::clog << "log authController::changePassword" << std::endl;
 
+    try {
+        auto attributes = req->getAttributes();
+        auto body = attributes->get<std::shared_ptr<Json::Value>>("body");
+        std::string hashPassword = bcrypt::generateHash((*body)["password"].asString());
+        std::string accessToken = (*body)["accessToken"].asString();
+        auto decodedToken = jwt::decode(accessToken);
+        AuthService::Id userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
+        AuthService::changePassword(userId, hashPassword);
+        Json::Value ret;
+        ret["message"] = "New password set successfully";
+        auto resp = HttpResponse::newHttpJsonResponse(ret);
+        resp->setStatusCode(drogon::HttpStatusCode::k200OK);
+        callback(resp);
+    } catch (const std::exception &e) {
+        Json::Value ret;
+        ret["error"] = e.what();
+        auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
+        resp->setStatusCode(drogon::k400BadRequest);
+        callback(resp);
+    }
 }

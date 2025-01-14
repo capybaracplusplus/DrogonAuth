@@ -5,10 +5,10 @@
 #include "string"
 
 class UserRepos {
-    using id = size_t;
+    using Id = size_t;
     using DbClientType = drogon::orm::DbClientPtr;
     struct UserAuth {
-        id id_;
+        Id id_;
         std::string password;
     };
 public:
@@ -17,11 +17,11 @@ public:
 public:
     void create_user(const user &);
 
-    void delete_user(const user &);
+    void deleteUser(const user &);
 
-    user read_user(id);
+    user readUser(Id);
 
-    void update_user(const user &);
+    void updatePassword(Id id, const std::string &password);
 
     UserAuth getUserAuthData(const std::string &username, const std::string &email);
 
