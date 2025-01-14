@@ -16,4 +16,6 @@ public:
     static UserData login(const user &);
 
     static void logout(const UserData &);
+
+    static void updateAccessToken(const UserData &) {}
 };

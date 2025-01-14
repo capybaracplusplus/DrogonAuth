@@ -62,13 +62,13 @@ void authController::logout(const HttpRequestPtr &req, std::function<void(const 
     std::clog << "log logoutController" << std::endl;
     try {
         auto attributes = req->getAttributes();
-        auto newAccessToken = attributes->get<std::string>("newAccessToken");
-        auto newRefreshToken = attributes->get<std::string>("newRefreshToken");
+        auto accessToken = attributes->get<std::string>("accessToken");
+        auto refreshToken = attributes->get<std::string>("refreshToken");
 
-        auto decodedToken = jwt::decode(newAccessToken);
+        auto decodedToken = jwt::decode(refreshToken);
         auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
 
-        AuthService::UserData userData(JwtToken::TokenPair{newAccessToken, newRefreshToken}, userId);
+        AuthService::UserData userData(JwtToken::TokenPair{accessToken, refreshToken}, userId);
 
         AuthService::logout(userData);
 
@@ -78,6 +78,30 @@ void authController::logout(const HttpRequestPtr &req, std::function<void(const 
         auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
         resp->setStatusCode(drogon::k200OK);
         callback(resp);
+    } catch (const std::exception &e) {
+        Json::Value ret;
+        ret["error"] = e.what();
+        auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
+        resp->setStatusCode(drogon::k400BadRequest);
+        callback(resp);
+    }
+}
+
+void getNewAccessToken(const HttpRequestPtr &req,
+                       std::function<void(const HttpResponsePtr &)> &&callback) {
+    std::clog << "log getNewAccessToken" << std::endl;
+
+    try {
+        auto attributes = req->getAttributes();
+        auto accessToken = attributes->get<std::string>("accessToken");
+        auto refreshToken = attributes->get<std::string>("refreshToken");
+
+        auto decodedToken = jwt::decode(refreshToken);
+        auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
+
+        AuthService::UserData userData(JwtToken::TokenPair{accessToken, refreshToken}, userId);
+
+        AuthService::updateAccessToken(userData);
     } catch (const std::exception &e) {
         Json::Value ret;
         ret["error"] = e.what();

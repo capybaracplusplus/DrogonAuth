@@ -6,16 +6,15 @@
 using namespace drogon;
 void validationFunc(const UserDto &) noexcept(false) {}
 
-class authValidationMiddleware : public HttpMiddleware<authValidationMiddleware> {
+class ValidateUserRequestMiddleware : public HttpMiddleware<ValidateUserRequestMiddleware> {
 public:
 
-    authValidationMiddleware() {};
+    ValidateUserRequestMiddleware() {};
 
     void invoke(const HttpRequestPtr &req,
                 MiddlewareNextCallback &&nextCb,
                 MiddlewareCallback &&mcb) override {
-
-        std::clog << "log authValidationMiddleware" << std::endl;
+        std::clog << "log ValidateUserRequestMiddleware" << std::endl;
 
         if (req->getBody().empty()) {
             std::clog << "Request body is empty" << std::endl;

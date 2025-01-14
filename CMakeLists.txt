@@ -21,7 +21,7 @@ add_executable(my_drogon_app
         src/main.cpp
         src/models/user.hpp
         src/dto/userDtro.hpp
-        src/middlewares/authValidationMiddleware.hpp
+        src/middlewares/ValidateUserRequestMiddleware.hpp
         src/controllers/authController.cpp
         src/controllers/authController.h
         src/repositories/userTableRepos.hpp
@@ -31,9 +31,10 @@ add_executable(my_drogon_app
         src/repositories/sessionRepos.cpp
         src/repositories/sessionRepos.hpp
         src/utils/jwt/jwtToken.hpp
-        src/middlewares/authMiddleware.hpp
+        src/middlewares/ValidateRequestBodyMiddleware.hpp
         src/models/chat.hpp
         src/models/message.hpp
+        src/middlewares/ValidateTokensMiddleware.hpp
 )
 
 # <------------ add hiredis dependency --------------->
