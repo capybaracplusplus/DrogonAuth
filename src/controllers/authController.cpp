@@ -87,7 +87,7 @@ void authController::logout(const HttpRequestPtr &req, std::function<void(const 
     }
 }
 
-void getNewAccessToken(const HttpRequestPtr &req,
+void authController::getNewAccessToken(const HttpRequestPtr &req,
                        std::function<void(const HttpResponsePtr &)> &&callback) {
     std::clog << "log getNewAccessToken" << std::endl;
 
@@ -100,8 +100,20 @@ void getNewAccessToken(const HttpRequestPtr &req,
         auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
 
         AuthService::UserData userData(JwtToken::TokenPair{accessToken, refreshToken}, userId);
+        JwtToken::TokenPair jwt = AuthService::updateAccessToken(userData);
 
-        AuthService::updateAccessToken(userData);
+        Json::Value ret;
+        ret["message"] = "The user has successfully updated the access token";
+        ret["accessToken"] = jwt.accessToken;
+        ret["userId"] = userData.id;
+        auto resp = HttpResponse::newHttpJsonResponse(ret);
+        resp->setStatusCode(drogon::HttpStatusCode::k200OK);
+        Cookie cookie("refreshToken", jwt.refreshToken);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        resp->addCookie(cookie);
+        callback(resp);
     } catch (const std::exception &e) {
         Json::Value ret;
         ret["error"] = e.what();

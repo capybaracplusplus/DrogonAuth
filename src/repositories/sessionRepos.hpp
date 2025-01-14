@@ -19,13 +19,11 @@ namespace repos {
 
         Session(const JwtTokens &jwtTokens_) : jwtTokens_(jwtTokens_) {}
 
-        void upload(const user_id &) ;
+        void upload(const user_id &);
 
-        const JwtTokens &get(const user_id &) ;
+        const JwtTokens &get(const user_id &);
 
-        void remove(const user_id &) ;
-
-        const JwtTokens &getJwt() ;
+        void remove(const user_id &);
 
     private:
         DbClientType &dbClient_ = redisDbClient;

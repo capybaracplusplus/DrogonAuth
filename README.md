@@ -58,6 +58,23 @@
 ```
 ![упс..](./pic/authRefreshToken.png)
 
+### Обновление access token
+**POST /getNewAccessToken**  
+Тело запроса:
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MzY5Mzg1NzgsImlhdCI6MTczNjgzMDU3OCwiaXNzIjoiQ2FweSIsInN1YiI6IjQwIn0.wxL6djVoY-0uBt1XcaEG3DwPe-vQ1-6yGSgiFyDuaLQ"
+}
+```
+Тело ответа:
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MzY5Mzg1NzgsImlhdCI6MTczNjgzMDU3OCwiaXNzIjoiQ2FweSIsInN1YiI6IjQwIn0.wxL6djVoY-0uBt1XcaEG3DwPe-vQ1-6yGSgiFyDuaLQ",
+  "message": "The user has successfully updated the access token",
+  "userId": 1
+}
+```
+
 ### Выход из системы
 **POST /logout**  
 Тело запроса:

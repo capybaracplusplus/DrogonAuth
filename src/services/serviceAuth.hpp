@@ -17,5 +17,5 @@ public:
 
     static void logout(const UserData &);
 
-    static void updateAccessToken(const UserData &) {}
+    static JwtToken::TokenPair updateAccessToken(const UserData &);
 };
