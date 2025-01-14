@@ -21,9 +21,9 @@ namespace repos {
 
         void upload(const user_id &);
 
-        const JwtTokens &get(const user_id &);
+        const JwtTokens &get(const user_id &, const JwtTokens &jwtTokens);
 
-        void remove(const user_id &);
+        void remove(const user_id &, const JwtTokens &jwtTokens);
 
     private:
         DbClientType &dbClient_ = redisDbClient;

@@ -32,7 +32,9 @@ public:
                 auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
 
                 JwtToken::TokenPair redisTokenPair = repos::Session(
-                        repos::Session::JwtTokens{accessToken, refreshToken}).get(userId);
+                        repos::Session::JwtTokens{accessToken, refreshToken}).get(userId,
+                                                                                  repos::Session::JwtTokens{accessToken,
+                                                                                                            refreshToken});
 
                 if (redisTokenPair.accessToken != accessToken) {
                     std::runtime_error("No such access token found");

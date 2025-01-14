@@ -38,13 +38,13 @@ AuthService::UserData AuthService::login(const user &user) {
 void AuthService::logout(const UserData &userData) {
     std::clog << "log logout" << std::endl;
     repos::Session session(userData.TokenPair);
-    session.remove(userData.id);
+    session.remove(userData.id,userData.TokenPair);
 }
 
 JwtToken::TokenPair AuthService::updateAccessToken(const UserData &userData) {
     std::clog << "log updateAccessToken" << std::endl;
     repos::Session session(userData.TokenPair);
-    session.remove(userData.id);
+    session.remove(userData.id,userData.TokenPair);
     session.upload(userData.id);
-    return session.get(userData.id);
+    return session.get(userData.id,userData.TokenPair);
 }

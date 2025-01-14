@@ -5,16 +5,18 @@
 
 using namespace repos;
 
-void Session::upload(const user_id &user_id)  {
+void Session::upload(const user_id &user_id) {
     Json::Value valueJsonData;
     valueJsonData["accessToken"] = jwtTokens_.accessToken;
     valueJsonData["refreshToken"] = jwtTokens_.refreshToken;
     std::string value = Json::writeString(Json::StreamWriterBuilder(), valueJsonData);
-    dbClient_.set(std::to_string(user_id), value);
+    std::string redisKey = std::to_string(user_id) + ":" + jwtTokens_.accessToken;
+    dbClient_.set(redisKey, value);
 }
 
-const Session::JwtTokens &Session::get(const user_id &user_id) {
-    auto valueOpt = dbClient_.get(std::to_string(user_id));
+const Session::JwtTokens &Session::get(const user_id &user_id, const JwtTokens &jwtTokens) {
+    std::string redisKey = std::to_string(user_id) + ":" + jwtTokens.accessToken;
+    auto valueOpt = dbClient_.get(redisKey);
     if (!valueOpt) {
         throw std::runtime_error("user ID not found in Redis");
     }
@@ -31,8 +33,9 @@ const Session::JwtTokens &Session::get(const user_id &user_id) {
     return jwtTokens_;
 }
 
-void Session::remove(const user_id &user_id) {
-    auto result = dbClient_.del(std::to_string(user_id));
+void Session::remove(const user_id &user_id, const JwtTokens &jwtTokens) {
+    std::string redisKey = std::to_string(user_id) + ":" + jwtTokens.accessToken;
+    auto result = dbClient_.del(redisKey);
     if (result == 0) {
         throw std::runtime_error("Failed to remove user from Redis: Key not found");
     }
