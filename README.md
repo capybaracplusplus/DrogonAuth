@@ -58,6 +58,22 @@
 ```
 ![упс..](./pic/authRefreshToken.png)
 
+### Изменение пароля
+**POST /changePassword**  
+Тело запроса:
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MzY5NjEzNzgsImlhdCI6MTczNjg1MzM3OCwiaXNzIjoiQ2FweSIsInN1YiI6IjMifQ.p2OtD-GCZBizt_bHv5IOPKRwcajMxFoaftOWSeOxDRU",
+  "password": "New123456789&mM"
+}
+```
+Тело ответа:
+```json
+{
+  "message": "New password set successfully"
+}
+```
+
 ### Обновление access token
 **POST /getNewAccessToken**  
 Тело запроса:
