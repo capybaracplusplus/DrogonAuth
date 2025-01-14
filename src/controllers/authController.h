@@ -8,12 +8,15 @@ class authController : public drogon::HttpController<authController> {
 public:
 
     METHOD_LIST_BEGIN
-
-        ADD_METHOD_TO(authController::signUp, "/sign-up", Post, "ValidateUserRequestMiddleware");
-        ADD_METHOD_TO(authController::signIn, "/sign-in", Post, "ValidateUserRequestMiddleware");
-        ADD_METHOD_TO(authController::logout, "/logout", Post, "ValidateRequestBodyMiddleware");
+        ADD_METHOD_TO(authController::signUp, "/sign-up", Post, "ValidateRequestBodyMiddleware",
+                      "ValidateEmailAndUsernameMiddleware", "ValidatePasswordMiddleware");
+        ADD_METHOD_TO(authController::signIn, "/sign-in", Post, "ValidateRequestBodyMiddleware",
+                      "ValidateEmailAndUsernameMiddleware", "ValidatePasswordMiddleware");
+        ADD_METHOD_TO(authController::logout, "/logout", Post, "TokenExtractionMiddleware");
         ADD_METHOD_TO(authController::getNewAccessToken, "/getNewAccessToken",
-                      Post, "ValidateRequestBodyMiddleware", "ValidateTokensMiddleware");
+                      Post, "TokenExtractionMiddleware", "ValidateTokensMiddleware");
+        ADD_METHOD_TO(authController::changePassword, "/changePassword", Post, "ValidateRequestBodyMiddleware",
+                      "ValidatePasswordMiddleware");
     METHOD_LIST_END
 
     void signUp(const HttpRequestPtr &req,

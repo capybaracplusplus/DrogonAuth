@@ -2,19 +2,16 @@
 
 #include <drogon/HttpMiddleware.h>
 #include <string>
-#include "../utils/jwt/jwtToken.hpp"
+
 #include "../dto/userDtro.hpp"
-#include "../repositories/sessionRepos.hpp"
 
 using namespace drogon;
 
-size_t getUserId(const std::string &refreshToken) {
-    auto decodedToken = jwt::decode(refreshToken);
-    return std::stoi(decodedToken.get_payload_claim("sub").as_string());
-}
+void validationFunc(const UserDto &) noexcept(false) {}
 
 class ValidateRequestBodyMiddleware : public HttpMiddleware<ValidateRequestBodyMiddleware> {
 public:
+
     ValidateRequestBodyMiddleware() {};
 
     void invoke(const HttpRequestPtr &req,
@@ -22,43 +19,26 @@ public:
                 MiddlewareCallback &&mcb) override {
         std::clog << "log ValidateRequestBodyMiddleware" << std::endl;
 
-        auto body = req->getJsonObject();
-        if (!body) {
+        try {
+            if (req->getBody().empty()) {
+                std::clog << "Request body is empty" << std::endl;
+                throw std::runtime_error("Empty request body");
+            }
+            auto body = req->getJsonObject();
+
+            if (!body) {
+                std::clog << "Failed to parse JSON body" << std::endl;
+                throw std::runtime_error("Invalid JSON body");
+            }
+            req->getAttributes()->insert("body", body);
+        } catch (const std::exception &e) {
             Json::Value ret;
-            ret["error"] = "Invalid JSON body";
+            ret["error"] = e.what();
             auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
             resp->setStatusCode(drogon::k400BadRequest);
             mcb(resp);
             return;
         }
-
-        if (!body->isMember("accessToken")) {
-            Json::Value ret;
-            ret["error"] = "The body is missing the required field accessToken";
-            auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
-            resp->setStatusCode(drogon::k400BadRequest);
-            mcb(resp);
-            return;
-        }
-
-        auto cookies = req->getCookies();
-        auto refreshTokenIt = cookies.find("refreshToken");
-
-        if (refreshTokenIt == cookies.end()) {
-            Json::Value ret;
-            ret["error"] = "Missing refreshToken in cookies";
-            auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
-            resp->setStatusCode(drogon::k401Unauthorized);
-            mcb(resp);
-            return;
-        }
-
-        std::string refreshToken = refreshTokenIt->second;
-        std::string accessToken = (*body)["accessToken"].asString();
-
-        req->getAttributes()->insert("accessToken", accessToken);
-        req->getAttributes()->insert("refreshToken", refreshToken);
-
         nextCb(std::move(mcb));
     }
 };

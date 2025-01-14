@@ -1,8 +1,10 @@
 #include <iostream>
 #include "drogon/drogon.h"
-#include "middlewares/ValidateTokensMiddleware.hpp"
+#include "middlewares/TokenExtractionMiddleware.hpp"
+#include "middlewares/ValidateEmailAndUsernameMiddleware .hpp"
+#include "middlewares/ValidatePasswordMiddleware .hpp"
 #include "middlewares/ValidateRequestBodyMiddleware.hpp"
-#include "middlewares/ValidateUserRequestMiddleware.hpp"
+#include "middlewares/ValidateTokensMiddleware.hpp"
 #include "controllers/authController.h"
 
 namespace repos {

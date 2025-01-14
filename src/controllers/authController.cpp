@@ -88,7 +88,7 @@ void authController::logout(const HttpRequestPtr &req, std::function<void(const 
 }
 
 void authController::getNewAccessToken(const HttpRequestPtr &req,
-                       std::function<void(const HttpResponsePtr &)> &&callback) {
+                                       std::function<void(const HttpResponsePtr &)> &&callback) {
     std::clog << "log getNewAccessToken" << std::endl;
 
     try {

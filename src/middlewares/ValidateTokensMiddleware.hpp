@@ -24,9 +24,9 @@ public:
         try {
             if (!jwtValidateToken.validateToken(accessToken)) {
                 if (!jwtValidateToken.validateToken(refreshToken)) {
-                    std::runtime_error("Refresh token is not valid");
+                    throw std::runtime_error("Refresh token is not valid");
                 }
-                std::runtime_error("Access token is not valid");
+                throw std::runtime_error("Access token is not valid");
             } else {
                 auto decodedToken = jwt::decode(accessToken);
                 auto userId = std::stoi(decodedToken.get_payload_claim("sub").as_string());
@@ -37,7 +37,7 @@ public:
                                                                                                             refreshToken});
 
                 if (redisTokenPair.accessToken != accessToken) {
-                    std::runtime_error("No such access token found");
+                    throw std::runtime_error("No such access token found");
                 }
             }
         } catch (const std::exception &e) {
