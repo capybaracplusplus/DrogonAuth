@@ -1,0 +1,242 @@
+openapi: 3.0.0
+info:
+  title: Authentication API
+  description: API для аутентификации пользователей
+  version: 1.0.0
+paths:
+  /sign-up:
+    post:
+      summary: Регистрация нового пользователя
+      operationId: signUp
+      tags:
+        - Auth
+      requestBody:
+        description: Данные для регистрации нового пользователя
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Имя пользователя
+                email:
+                  type: string
+                  format: email
+                  description: Электронная почта пользователя
+                password:
+                  type: string
+                  description: Пароль пользователя
+      responses:
+        '201':
+          description: Пользователь успешно зарегистрирован
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "user registered successfully"
+        '400':
+          description: Неверные данные
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Required fields (username or email) are missing"
+
+  /sign-in:
+    post:
+      summary: Вход пользователя
+      operationId: signIn
+      tags:
+        - Auth
+      requestBody:
+        description: Данные для входа
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Имя пользователя
+                password:
+                  type: string
+                  description: Пароль пользователя
+      responses:
+        '200':
+          description: Успешный вход
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The user has successfully logged into the account"
+                  accessToken:
+                    type: string
+                    description: Новый access token
+                  userId:
+                    type: integer
+                    description: Идентификатор пользователя
+        '400':
+          description: Неверные данные для входа
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid username or password"
+
+  /logout:
+    post:
+      summary: Выход пользователя
+      operationId: logout
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Пользователь успешно вышел
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The user has successfully logged out of the account."
+                  logout:
+                    type: string
+                    example: "ok"
+        '401':
+          description: Неверный токен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Access token is not valid"
+
+  /getNewAccessToken:
+    post:
+      summary: Получить новый access token
+      operationId: getNewAccessToken
+      tags:
+        - Auth
+      requestBody:
+        description: Токены для получения нового access token
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - accessToken
+                - refreshToken
+              properties:
+                accessToken:
+                  type: string
+                  description: Текущий access token
+                refreshToken:
+                  type: string
+                  description: Текущий refresh token
+      responses:
+        '200':
+          description: Новый access token получен успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The user has successfully updated the access token"
+                  accessToken:
+                    type: string
+                    description: Новый access token
+                  userId:
+                    type: integer
+                    description: Идентификатор пользователя
+        '400':
+          description: Неверные токены
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid tokens"
+
+  /changePassword:
+    post:
+      summary: Смена пароля пользователя
+      operationId: changePassword
+      tags:
+        - Auth
+      requestBody:
+        description: Новые данные для смены пароля
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+                - accessToken
+              properties:
+                password:
+                  type: string
+                  description: Новый пароль
+                accessToken:
+                  type: string
+                  description: Текущий access token
+      responses:
+        '200':
+          description: Пароль успешно изменен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "New password set successfully"
+        '400':
+          description: Ошибка при изменении пароля
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid password"
+
+components:
+  securitySchemes:
+    JWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  security:
+    - JWT: []
