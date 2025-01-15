@@ -32,6 +32,7 @@ public:
                 throw std::runtime_error("Username cannot be empty");
             }
         } catch (const std::exception &e) {
+            std::clog << "log "<< e.what() << std::endl;
             Json::Value ret;
             ret["error"] = e.what();
             auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);

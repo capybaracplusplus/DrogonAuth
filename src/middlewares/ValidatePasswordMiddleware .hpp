@@ -27,6 +27,7 @@ public:
                 throw std::runtime_error("Password must be at least 8 characters long");
             }
         } catch (const std::exception &e) {
+            std::clog << "log "<< e.what() << std::endl;
             Json::Value ret;
             ret["error"] = e.what();
             auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);

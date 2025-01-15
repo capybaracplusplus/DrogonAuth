@@ -19,6 +19,7 @@ void authController::signUp(const HttpRequestPtr &req, std::function<void(const 
         resp->setStatusCode(drogon::HttpStatusCode::k201Created);
         callback(resp);
     } catch (const std::exception &e) {
+        std::clog << "log "<< e.what() << std::endl;
         Json::Value ret;
         ret["error"] = e.what();
         auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
@@ -43,7 +44,7 @@ void authController::signIn(const HttpRequestPtr &req, std::function<void(const 
         ret["accessToken"] = jwt.accessToken;
         ret["userId"] = userData.id;
         auto resp = HttpResponse::newHttpJsonResponse(ret);
-        resp->setStatusCode(drogon::HttpStatusCode::k204NoContent);
+        resp->setStatusCode(drogon::HttpStatusCode::k200OK);
         Cookie cookie("refreshToken", jwt.refreshToken);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
@@ -51,6 +52,7 @@ void authController::signIn(const HttpRequestPtr &req, std::function<void(const 
         resp->addCookie(cookie);
         callback(resp);
     } catch (const std::exception &e) {
+        std::clog << "log "<< e.what() << std::endl;
         Json::Value ret;
         ret["error"] = e.what();
         auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
@@ -77,9 +79,10 @@ void authController::logout(const HttpRequestPtr &req, std::function<void(const 
         ret["message"] = "The user has successfully logged out of the account.";
         ret["logout"] = "ok";
         auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
-        resp->setStatusCode(drogon::k200OK);
+        resp->setStatusCode(drogon::HttpStatusCode::k200OK);
         callback(resp);
     } catch (const std::exception &e) {
+        std::clog << "log "<< e.what() << std::endl;
         Json::Value ret;
         ret["error"] = e.what();
         auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
@@ -116,6 +119,7 @@ void authController::getNewAccessToken(const HttpRequestPtr &req,
         resp->addCookie(cookie);
         callback(resp);
     } catch (const std::exception &e) {
+        std::clog << "log "<< e.what() << std::endl;
         Json::Value ret;
         ret["error"] = e.what();
         auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
@@ -142,6 +146,7 @@ authController::changePassword(const HttpRequestPtr &req, std::function<void(con
         resp->setStatusCode(drogon::HttpStatusCode::k200OK);
         callback(resp);
     } catch (const std::exception &e) {
+        std::clog << "log "<< e.what() << std::endl;
         Json::Value ret;
         ret["error"] = e.what();
         auto resp = drogon::HttpResponse::newHttpJsonResponse(ret);
