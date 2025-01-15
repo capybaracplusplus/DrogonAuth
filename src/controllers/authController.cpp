@@ -16,7 +16,7 @@ void authController::signUp(const HttpRequestPtr &req, std::function<void(const 
         Json::Value ret;
         ret["message"] = "user registered successfully";
         auto resp = HttpResponse::newHttpJsonResponse(ret);
-        resp->setStatusCode(drogon::HttpStatusCode::k200OK);
+        resp->setStatusCode(drogon::HttpStatusCode::k201Created);
         callback(resp);
     } catch (const std::exception &e) {
         Json::Value ret;
@@ -43,7 +43,7 @@ void authController::signIn(const HttpRequestPtr &req, std::function<void(const 
         ret["accessToken"] = jwt.accessToken;
         ret["userId"] = userData.id;
         auto resp = HttpResponse::newHttpJsonResponse(ret);
-        resp->setStatusCode(drogon::HttpStatusCode::k200OK);
+        resp->setStatusCode(drogon::HttpStatusCode::k204NoContent);
         Cookie cookie("refreshToken", jwt.refreshToken);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
