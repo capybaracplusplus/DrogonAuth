@@ -32,8 +32,6 @@ add_executable(my_drogon_app
         src/repositories/sessionRepos.hpp
         src/utils/jwt/jwtToken.hpp
         src/middlewares/TokenExtractionMiddleware.hpp
-        src/models/chat.hpp
-        src/models/message.hpp
         src/middlewares/ValidateTokensMiddleware.hpp
         "src/middlewares/ValidatePasswordMiddleware .hpp"
         "src/middlewares/ValidateEmailAndUsernameMiddleware .hpp"
