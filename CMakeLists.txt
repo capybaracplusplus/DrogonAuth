@@ -1,21 +1,18 @@
 cmake_minimum_required(VERSION 3.30)
-project(DrogonAuth)
+project(AuthService)
 
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(libs/Bcrypt.cpp)
 add_subdirectory(libs/redis-plus-plus)
+add_subdirectory(libs/googletest)
 include_directories(/path/to/redis-plus-plus)
 
 find_package(Drogon REQUIRED)
 find_package(PostgreSQL REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
-include_directories(${CMAKE_SOURCE_DIR}/libs/jwt-cpp/include)
-
-
-#include_directories(${CMAKE_SOURCE_DIR}/libs/libsodium-cmake/libsodium/src/libsodium/include)
-
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/jwt-cpp/include)
 
 add_executable(my_drogon_app
         src/main.cpp
@@ -47,9 +44,6 @@ find_library(HIREDIS_LIB hiredis)
 find_path(REDIS_PLUS_PLUS_HEADER sw)
 find_library(REDIS_PLUS_PLUS_LIB redis++)
 
-
-
-
 target_link_libraries(my_drogon_app
         PRIVATE Drogon::Drogon
         nlohmann_json::nlohmann_json
@@ -64,3 +58,19 @@ target_link_libraries(my_drogon_app
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(my_drogon_app PRIVATE DEBUG)
 endif()
+
+# Тесты
+#add_executable(my_tests
+#        tests/serviseAuth.cpp
+#)
+#
+#target_link_libraries(my_tests
+#        PRIVATE
+#        GTest::GTest
+#        GTest::Main
+#        ${CMAKE_THREAD_LIBS_INIT}
+#)
+#
+#if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+#    target_compile_definitions(my_drogon_app PRIVATE DEBUG)
+#endif()
